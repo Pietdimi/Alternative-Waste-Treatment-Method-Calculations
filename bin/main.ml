@@ -1,4 +1,13 @@
+open Constants
+module StringMap = Map.Make(String)
+let _get_default_waste_percentage_for_waste_mix_type waste_type scenario =
 
+  match StringMap.find_opt waste_type Constants.default_waste_percentage_for_waste_mix_type with
+  | Some scenario_map -> 
+      (match StringMap.find_opt scenario scenario_map with
+      | Some value -> value
+      | None -> failwith "Scenario not found")
+  | None -> failwith "Waste type not found"
 
 (* Equation 6 *)
 
@@ -8,7 +17,7 @@ QRP is the quantity of residual waste disposed of during the reporting period in
 QNBP is the quantity of non-biobased products manufactured during the reporting period, in tonnes.
 HW is the historic quantity of putrescible eligible waste for the reporting period found using section 27.  *)
 
-let putrescible_waste ew qrp qnbp hw : float =
+let _putrescible_waste ew qrp qnbp hw : float =
   ew -. (qrp +. qnbp +. hw)
 
 
@@ -18,7 +27,7 @@ let putrescible_waste ew qrp qnbp hw : float =
   QC&I is the quantity of the eligible waste which is commercial and industrial waste in tonnes.
 QC&D is the quantity of the eligible waste which is construction and demolition waste in tonnes. *)
 
-let eligible_waste qmsw qci qcd : float = 
+let _eligible_waste qmsw qci qcd : float = 
   qmsw +. qci +. qcd
 
 
@@ -28,7 +37,7 @@ let eligible_waste qmsw qci qcd : float =
 HQRW is the quantity of residual waste disposed of by the facility during the relevant 24 month period in tonnes, *worked using appropriate evidence.*
 HQNBP is the quantity of non-biobased products manufactured by the facility during the relevant 24 month period in tonnes, *worked using appropriate evidence*. *)
 
-let historic_putrescible_waste hqew hqrw hqnbp : float =
+let _historic_putrescible_waste hqew hqrw hqnbp : float =
   hqew -. (hqrw +. hqnbp)
   
 (* Equation 13 *)
@@ -36,6 +45,10 @@ let historic_putrescible_waste hqew hqrw hqnbp : float =
 (* QTW is the total quantity of putrecible waste received during the reporting period, in tonnes.
 QRW is the quantity of residual waste disposed of during the reporting period, in tonnes, worked out in accordance with the monitoring requirements.
 QNBP is the quantity of non-biobased products manufactured during the reporting period, in tonnes, worked out in accordance with the monitoring requirements. *)
-let total_putrescible_waste qtw qrw qnhp : float =
+let _total_putrescible_waste qtw qrw qnhp : float =
   qtw -. qrw -. qnhp
 
+let () =
+  (* print_endline "Hello, World!" *)
+  let waste_percentage = _get_default_waste_percentage_for_waste_mix_type "food" "msw_class_2" in
+    Printf.printf "Default waste percentage for waste mix type: %f\n" waste_percentage

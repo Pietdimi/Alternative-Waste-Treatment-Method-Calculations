@@ -1,0 +1,5 @@
+(executable
+ (public_name AWT)
+ (name main)
+ (modules constants main)
+ (libraries AWT))
