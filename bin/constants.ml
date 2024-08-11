@@ -8,6 +8,10 @@ module Constants = struct
   let carbon_to_methane_conversion_factor = Bd.of_string "1.336"
   let methane_correction_factor_aerobic_decomposition = Bd.of_string "1.0"
   let methane_volume_fraction_in_land_fill_gas = Bd.of_string "0.5"
+  let methane_from_composting_emission_factor = Bd.of_string "0.021"
+  let nitrous_oxide_from_composting_emission_factor = Bd.of_string "0.025"
+  let methane_from_anaerobic_digestion_emission_factor = Bd.of_string "0.028"
+  let nitrous_oxide_from_anaerobic_digestion_emission_factor = Bd.zero
 
   module StringMap = Map.Make(String)
 
@@ -111,7 +115,7 @@ module Constants = struct
     let open StringMap in
     empty
     |> add "food" (Bd.of_string "0.15")
-    |> add "paper" (Bd.of_string "0.4")
+    |> add "paper_and_cardboard" (Bd.of_string "0.4")
     |> add "garden_and_green" (Bd.of_string "0.2")
     |> add "wood" (Bd.of_string "0.43")
     |> add "textiles" (Bd.of_string "0.24")
@@ -120,6 +124,21 @@ module Constants = struct
     |> add "rubber_and_leather" (Bd.of_string "0.39")
     |> add "inert_waste" Bd.zero
     |> add "alternative_waste_treatment_residues" (Bd.of_string "0.08")
+
+  let fraction_of_degradable_organic_carbon_dissimilated =
+    let open StringMap in
+    empty
+    |> add "food" (Bd.of_string "0.84")
+    |> add "paper_and_cardboard" (Bd.of_string "0.49")
+    |> add "garden_and_green" (Bd.of_string "0.47")
+    |> add "wood" (Bd.of_string "0.23")
+    |> add "textiles" (Bd.of_string "0.50")
+    |> add "sludge" (Bd.of_string "0.50")
+    |> add "nappies" (Bd.of_string "0.50")
+    |> add "rubber_and_leather" (Bd.of_string "0.50")
+    |> add "inert_waste" Bd.zero
+    |> add "alternative_waste_treatment_residues" (Bd.of_string "0.50")
+
 
 end
   

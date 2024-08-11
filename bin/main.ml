@@ -41,6 +41,11 @@ HQNBP is the quantity of non-biobased products manufactured by the facility duri
 
 let _historic_putrescible_waste (hqew : Bd.t) (hqrw : Bd.t) (hqnbp : Bd.t) : Bd.t =
   Bd.(hqew - (hqrw + hqnbp))
+
+(* Equation 12 *)
+
+let _emissions_from_processing_putrescible_waste (pw : Bd.t) (tpw : Bd.t) (e_compost : Bd.t) (e_ad : Bd.t) (e_combustion : Bd.t) =
+  Bd.((div pw tpw)*(e_compost+e_ad+e_combustion))
   
 (* Equation 13 *)
 
@@ -50,11 +55,22 @@ QNBP is the quantity of non-biobased products manufactured during the reporting 
 let _total_putrescible_waste (qtw : Bd.t) (qrw : Bd.t) (qnhp : Bd.t) : Bd.t =
   Bd.(qtw - qrw - qnhp)
 
+(* Equation 14 *)
+
+let _emssions_from_composting_unmonitored (qc : Bd.t) (biofilter_used : bool) =
+  let re_compost = if biofilter_used then Bd.of_string "0.1" else Bd.zero
+  in
+  Bd.((Constants.methane_from_composting_emission_factor + Constants.nitrous_oxide_from_composting_emission_factor ) * qc * Bd.one - re_compost)
+ 
+(* Equation 15 *)
+let _emssions_from_composting_monitored (dm_methane : Bd.t) (dm_nitrous_oxide : Bd.t) (biofilter_used : bool) =
+  let re_compost = if biofilter_used then Bd.of_string "0.1" else Bd.zero
+  in
+  Bd.((dm_methane + dm_nitrous_oxide)*(Bd.one - re_compost))
+
 let () =
-  (* print_endline "Hello, World!" *)
+  print_endline "Hello, World!";
   let waste_percentage = Bd.to_string_no_sn (_get_default_waste_percentage_for_waste_mix_type "food" "msw_class_2") in
-    Printf.printf "Default waste percentage for waste mix type: %s\n" waste_percentage
-
-
-  (* let number = Bd.to_string_no_sn Constants.cubic_meters_methane_to_tonnes_co2_eq in
-  Printf.printf "Default waste percentage for waste mix type: %s\n" number *)
+    Printf.printf "Default waste percentage for waste mix type: %s\n" waste_percentage;
+  let number = Bd.to_string_no_sn Constants.cubic_meters_methane_to_tonnes_co2_eq in
+  Printf.printf "Cubic meters methane to tonnes CO2 equivalent: %s\n" number
