@@ -12,6 +12,8 @@ module Constants = struct
   let nitrous_oxide_from_composting_emission_factor = Bd.of_string "0.025"
   let methane_from_anaerobic_digestion_emission_factor = Bd.of_string "0.028"
   let nitrous_oxide_from_anaerobic_digestion_emission_factor = Bd.zero
+  let megawatt_hours_to_giga_joules_conversion_factor = Bd.of_string "3.6"
+  let mass_of_carbon_to_mass_of_methane = Bd.of_string "1.336"
 
   module StringMap = Map.Make(String)
 
