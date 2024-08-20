@@ -11,6 +11,14 @@ let _get_default_waste_percentage_for_waste_mix_type waste_type scenario =
       | None -> failwith "Scenario not found")
   | None -> failwith "Waste type not found"
 
+
+  let _calculate_baseline_emissions state waste_mix_types msw_class (qmsw : Bd.t) (qcd : Bd.t) (qci : Bd.t) =
+    let ew = Bd.(qmsw + qcd + qci) in
+    let pw = ew in
+    
+
+
+
 (* Equation 1 *)
 
 let _net_abatement (a_0 : Bd.t) (a_acc : Bd.t) = 
