@@ -1,5 +1,5 @@
 (executable
  (public_name AWT)
  (name main)
- (modules constants main)
- (libraries AWT bigdecimal))
+ (modules constants csv_hash_table main)
+ (libraries AWT bigdecimal csv))

@@ -1,6 +1,8 @@
 open Constants
-module Bd = Bigdecimal
+open Csv_hash_table
+(* open Csv *)
 
+module Bd = Bigdecimal
 module StringMap = Map.Make(String)
 let _get_default_waste_percentage_for_waste_mix_type waste_type scenario =
 
@@ -12,11 +14,11 @@ let _get_default_waste_percentage_for_waste_mix_type waste_type scenario =
   | None -> failwith "Waste type not found"
 
 
-  let _calculate_baseline_emissions state waste_mix_types msw_class (qmsw : Bd.t) (qcd : Bd.t) (qci : Bd.t) =
+  let _calculate_baseline_emissions _state _waste_mixtures_csv_file_name (qmsw : Bd.t) (qcd : Bd.t) (qci : Bd.t) =
     let ew = Bd.(qmsw + qcd + qci) in
     let pw = ew in
-    
-
+    let csv_table = CsvHashTable.load_csv _waste_mixtures_csv_file_name in
+    let quantities_of_wastes = 
 
 
 (* Equation 1 *)
