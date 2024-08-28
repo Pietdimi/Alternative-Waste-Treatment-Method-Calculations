@@ -1,10 +1,10 @@
 Waste Mix Type,MSW Class 1,MSW Class 2,C&I,C&D
-Food,0.35,,0.215,0
-Paper and cardboard,0.13,,0.155,0.03
-Garden and park,0.17,,0.04,0.02
-Wood and wood waste,0.01,,0.125,0.06
-Textiles,0.015,,0.04,0
-Sludge,0,,0.015,0
-Nappies,0.04,,0,0
-Rubber and leather,0.01,,0.035,0
-Inert waste,0.28,,0.375,0.89
+food,0.35,,0.215,0
+paper_and_cardboard,0.13,,0.155,0.03
+garden_and_park,0.17,,0.04,0.02
+wood_and_wood_waste,0.01,,0.125,0.06
+textiles,0.015,,0.04,0
+sludge,0,,0.015,0
+nappies,0.04,,0,0
+rubber_and_leather,0.01,,0.035,0
+inert_waste,0.28,,0.375,0.89

@@ -13,13 +13,19 @@ let _get_default_waste_percentage_for_waste_mix_type waste_type scenario =
       | None -> failwith "Scenario not found")
   | None -> failwith "Waste type not found"
 
+let _get_string_map_data constant_map waste_type = 
+  match StringMap.find_opt waste_type constant_map with
+    | Some value ->
+        value
+    | None -> failwith "not found"
 
-  let _calculate_baseline_emissions _state _waste_mixtures_csv_file_name (_qmsw : Bd.t) (_qcd : Bd.t) (_qci : Bd.t) =
-    (* let ew = Bd.(qmsw + qcd + qci) in *)
-    (* let pw = ew in *)
-    let csv_table = CsvHashTable.load_csv _waste_mixtures_csv_file_name in
-    csv_table
-
+  let _get_string_map_data_with_scenario constant_map row col = 
+    match StringMap.find_opt row constant_map with
+      | Some scenario_map ->
+          (match StringMap.find_opt col scenario_map with
+          | Some value -> value
+          | None -> failwith "not found")
+      | None -> failwith "not found"
 
 (* Equation 1 *)
 
@@ -56,6 +62,9 @@ let _methane_generation_potential_of_degradable_organic_waste (wmw : Bd.t) (docw
 
 let _quantity_of_waste_mix_type_w_present_in_eligible_waste (qmsw : Bd.t) (ew : Bd.t) (pw : Bd.t) (wmsww : Bd.t) (qcd : Bd.t) (wcdw : Bd.t) (qci : Bd.t) (wciw : Bd.t) =
     Bd.(((div qmsw ew)*pw*wmsww)+((div qcd ew)*pw*wcdw)+((div qci ew)*pw*wciw))
+
+let _quantity_of_waste_mix_type_w_present_in_eligible_waste_stream (q : Bd.t) (ew : Bd.t) (pw : Bd.t) (w : Bd.t) =
+  Bd.((div q ew)*pw*w)
 
 (* Equation 6 *)
 
@@ -153,9 +162,35 @@ let _volume_of_methane_vented ?(wbg_ch4 : Bd.t option = None) (msbsc : Bd.t) (fr
 let _emissions_from_combusion_device (m_sent : Bd.t) (ecbg : Bd.t) (efj : Bd.t) =
   Bd.(div (m_sent*ecbg*efj) (Bd.of_string "1000"))
 
+let _calculate_baseline_emissions state waste_mixtures_csv_file_name (q : Bd.t) stream project_type =
+  let ew = q in
+  let pw = ew in
+  let csv_table = CsvHashTable.load_csv waste_mixtures_csv_file_name in
+  let total_methane_generation_potential = ref Bd.zero in
+
+  let waste_types = CsvHashTable.get_row_headers csv_table in
+  List.iter (fun waste_type ->
+    match CsvHashTable.get_value csv_table waste_type stream with
+    | Some concentration_str ->
+        Printf.printf "log: %s\n" waste_type;
+        let concentration = Bd.of_string concentration_str in
+        
+        let w_present : Bd.t = _quantity_of_waste_mix_type_w_present_in_eligible_waste_stream q ew pw concentration in
+        let methane_generation_of_waste : Bd.t = _methane_generation_potential_of_degradable_organic_waste w_present (_get_string_map_data Constants.degradable_organic_carbon_content waste_type) (_get_string_map_data Constants.fraction_of_degradable_organic_carbon_dissimilated waste_type) in
+        
+        total_methane_generation_potential := Bd.(!total_methane_generation_potential + methane_generation_of_waste)
+    | None -> 
+        Printf.printf "Warning: No concentration found for waste type %s in MSW Class 1.\n" waste_type
+) waste_types;
+
+  let mb = !total_methane_generation_potential in  (* Total methane generation potential *)
+  let emissions = _emissions_baseline (_get_string_map_data_with_scenario Constants.average_capture_rate_for_methane_emissions_from_landfill state project_type) mb in  (* Calculate emissions *)
+
+emissions
+
 
 let () =
-  print_endline "Hello, World!";
+  (* print_endline "Hello, World!";
   let waste_percentage = Bd.to_string_no_sn (_get_default_waste_percentage_for_waste_mix_type "food" "msw_class_2") in
     Printf.printf "Default waste percentage for waste mix type: %s\n" waste_percentage;
   let number = Bd.to_string_no_sn Constants.cubic_meters_methane_to_tonnes_co2_eq in
@@ -165,4 +200,6 @@ let () =
   let food_MSW = CsvHashTable.get_value csv_data "Food" "MSW Class 1" in
     match food_MSW with
     | Some value -> Printf.printf "Value at food and MSW: %s\n" value
-    | None -> Printf.printf "No value found at food and MSW.\n"
+    | None -> Printf.printf "No value found at food and MSW.\n"; *)
+  let emissions = _calculate_baseline_emissions "vic" "test_sheet.csv" (Bd.of_string "1000") "MSW Class 1" "transitioning" in
+    Printf.printf "emissions for demo project: %s\n" (Bd.to_string_no_sn(emissions));

@@ -118,8 +118,8 @@ module Constants = struct
     empty
     |> add "food" (Bd.of_string "0.15")
     |> add "paper_and_cardboard" (Bd.of_string "0.4")
-    |> add "garden_and_green" (Bd.of_string "0.2")
-    |> add "wood" (Bd.of_string "0.43")
+    |> add "garden_and_park" (Bd.of_string "0.2")
+    |> add "wood_and_wood_waste" (Bd.of_string "0.43")
     |> add "textiles" (Bd.of_string "0.24")
     |> add "sludge" (Bd.of_string "0.05")
     |> add "nappies" (Bd.of_string "0.24")
@@ -132,8 +132,8 @@ module Constants = struct
     empty
     |> add "food" (Bd.of_string "0.84")
     |> add "paper_and_cardboard" (Bd.of_string "0.49")
-    |> add "garden_and_green" (Bd.of_string "0.47")
-    |> add "wood" (Bd.of_string "0.23")
+    |> add "garden_and_park" (Bd.of_string "0.47")
+    |> add "wood_and_wood_waste" (Bd.of_string "0.23")
     |> add "textiles" (Bd.of_string "0.50")
     |> add "sludge" (Bd.of_string "0.50")
     |> add "nappies" (Bd.of_string "0.50")
