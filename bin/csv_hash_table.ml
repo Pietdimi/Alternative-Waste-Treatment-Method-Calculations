@@ -1,5 +1,5 @@
 module CsvHashTable = struct
-  
+
   type t = (string * string, string) Hashtbl.t
 
   (* Load CSV file into a hash table *)
@@ -28,28 +28,36 @@ module CsvHashTable = struct
   let get_row_headers table =
     Hashtbl.fold (fun (row, _) _ acc -> 
       if not (List.mem row acc) then row :: acc else acc
-    ) table []
+    ) table [] |> List.rev
 
   (* Get all column headers *)
   let get_column_headers table =
     Hashtbl.fold (fun (_, col) _ acc -> 
       if not (List.mem col acc) then col :: acc else acc
-    ) table []
+    ) table [] |> List.rev
 
   (* Print the entire table (for debugging) *)
   let print_table table =
     let rows = get_row_headers table in
     let cols = get_column_headers table in
-    Printf.printf "  ";
-    List.iter (fun col -> Printf.printf "%s\t" col) cols;
+    
+    (* Define fixed width for columns *)
+    let column_width = 10 in  (* Adjust this width as necessary *)
+    
+    (* Print column headers *)
+    Printf.printf "%-*s" column_width "";  (* Print empty space for row header *)
+    List.iter (fun col -> Printf.printf "%-*s" column_width col) cols;
     Printf.printf "\n";
+    
+    (* Print each row with the corresponding values *)
     List.iter (fun row ->
-      Printf.printf "%s\t" row;
+      Printf.printf "%-*s" column_width row;  (* Print row header *)
       List.iter (fun col ->
         match get_value table row col with
-        | Some v -> Printf.printf "%s\t" v
-        | None -> Printf.printf "-\t"
+        | Some v -> Printf.printf "%-*s" column_width v  (* Print value *)
+        | None -> Printf.printf "%-*s" column_width "-"  (* Print placeholder for missing values *)
       ) cols;
       Printf.printf "\n"
     ) rows
+  
 end

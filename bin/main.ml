@@ -14,11 +14,11 @@ let _get_default_waste_percentage_for_waste_mix_type waste_type scenario =
   | None -> failwith "Waste type not found"
 
 
-  let _calculate_baseline_emissions _state _waste_mixtures_csv_file_name (qmsw : Bd.t) (qcd : Bd.t) (qci : Bd.t) =
-    let ew = Bd.(qmsw + qcd + qci) in
-    let pw = ew in
+  let _calculate_baseline_emissions _state _waste_mixtures_csv_file_name (_qmsw : Bd.t) (_qcd : Bd.t) (_qci : Bd.t) =
+    (* let ew = Bd.(qmsw + qcd + qci) in *)
+    (* let pw = ew in *)
     let csv_table = CsvHashTable.load_csv _waste_mixtures_csv_file_name in
-    let quantities_of_wastes = 
+    csv_table
 
 
 (* Equation 1 *)
@@ -159,4 +159,10 @@ let () =
   let waste_percentage = Bd.to_string_no_sn (_get_default_waste_percentage_for_waste_mix_type "food" "msw_class_2") in
     Printf.printf "Default waste percentage for waste mix type: %s\n" waste_percentage;
   let number = Bd.to_string_no_sn Constants.cubic_meters_methane_to_tonnes_co2_eq in
-  Printf.printf "Cubic meters methane to tonnes CO2 equivalent: %s\n" number
+    Printf.printf "Cubic meters methane to tonnes CO2 equivalent: %s\n" number;
+  let csv_data = CsvHashTable.load_csv "test_sheet.csv" in
+    CsvHashTable.print_table csv_data;
+  let food_MSW = CsvHashTable.get_value csv_data "Food" "MSW Class 1" in
+    match food_MSW with
+    | Some value -> Printf.printf "Value at food and MSW: %s\n" value
+    | None -> Printf.printf "No value found at food and MSW.\n"
